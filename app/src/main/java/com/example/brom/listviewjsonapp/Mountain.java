@@ -33,4 +33,8 @@ public class Mountain {
     public String getImage(){
         return url;
     }
+
+    public String infoText(){
+        return name + "is a part of the" + location + " mountain range and is " + height + "m high.";
+    }
 }

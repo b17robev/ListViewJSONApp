@@ -4,7 +4,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.Menu;
 import android.widget.ArrayAdapter;
+import android.widget.ListView;
 
 import org.json.*;
 
@@ -15,6 +17,7 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -35,12 +38,23 @@ public class MainActivity extends AppCompatActivity {
     List <Mountain> mountainList = new ArrayList<>();
     List <String> mountainNames = new ArrayList<>();
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        FetchData getJson = new FetchData();
+        getJson.execute();
+
+        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.item_textView, mountainNames);
+
+        ListView myListView = (ListView)findViewById(R.id.myList);
+        myListView.setAdapter(adapter);
+
     }
+
+
+
 
     private class FetchData extends AsyncTask<Void,Void,String>{
         @Override
@@ -103,6 +117,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }
+
         @Override
         protected void onPostExecute(String o) {
             super.onPostExecute(o);
@@ -124,13 +139,13 @@ public class MainActivity extends AppCompatActivity {
                     int height = mountain.getInt("size");
 
                     Mountain m = new Mountain(name, height, location, url);
+                    mountainList.add(m);
                     mountainNames.add(name);
                 }
             }
             catch( JSONException e) {
                 e.printStackTrace();
             }
-            
         }
     }
 }
