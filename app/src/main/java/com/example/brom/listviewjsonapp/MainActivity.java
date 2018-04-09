@@ -4,6 +4,9 @@ import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.widget.ArrayAdapter;
+
+import org.json.*;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -11,6 +14,9 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.logging.Logger;
 
 
 // Create a new class, Mountain, that can hold your JSON data
@@ -25,6 +31,10 @@ import java.net.URL;
 
 
 public class MainActivity extends AppCompatActivity {
+
+    List <Mountain> mountainList = new ArrayList<>();
+    List <String> mountainNames = new ArrayList<>();
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -45,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
 
             try {
                 // Construct the URL for the Internet service
-                URL url = new URL("_ENTER_THE_URL_TO_THE_PHP_SERVICE_SERVING_JSON_HERE_");
+                URL url = new URL("http://wwwlab.iit.his.se/brom/kurser/mobilprog/dbservice/admin/getdataasjson.php?type=brom");
 
                 // Create the request to the PHP-service, and open the connection
                 urlConnection = (HttpURLConnection) url.openConnection();
@@ -100,7 +110,27 @@ public class MainActivity extends AppCompatActivity {
             // the un-parsed JSON string or is null if we had an IOException during the fetch.
 
             // Implement a parsing code that loops through the entire JSON and creates objects
-            // of our newly created Mountain class.
+            // of our newly created Mountain class
+            try
+            {
+                JSONArray mountains = new JSONArray(o);
+
+                for(int i = 0; i < mountains.length(); i++){
+                    JSONObject mountain = mountains.getJSONObject(i);
+
+                    String name = mountain.getString("name");
+                    String location = mountain.getString("location");
+                    String url = mountain.getString("auxdata");
+                    int height = mountain.getInt("size");
+
+                    Mountain m = new Mountain(name, height, location, url);
+                    mountainNames.add(name);
+                }
+            }
+            catch( JSONException e) {
+                e.printStackTrace();
+            }
+            
         }
     }
 }
