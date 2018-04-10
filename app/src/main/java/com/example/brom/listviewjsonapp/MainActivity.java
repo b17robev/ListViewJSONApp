@@ -19,6 +19,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Array;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
@@ -40,9 +41,10 @@ import java.util.logging.Logger;
 
 public class MainActivity extends AppCompatActivity {
 
-    List <Mountain> mountainList = new ArrayList<>();
+    ArrayList<Mountain> mountainList = new ArrayList<>();
     List <String> mountainNames = new ArrayList<>();
     ListView myListView;
+    MountainAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,10 +54,7 @@ public class MainActivity extends AppCompatActivity {
         FetchData getJson = new FetchData();
         getJson.execute();
 
-        ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.item_textView, mountainNames);
-
         myListView = (ListView)findViewById(R.id.myList);
-        myListView.setAdapter(adapter);
 
 
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -94,7 +93,7 @@ public class MainActivity extends AppCompatActivity {
 
         if(id == R.id.action_refresh)
         {
-            mountainNames.clear();
+            mountainList.clear();
             new FetchData().execute();
             Toast refreshed = Toast.makeText(this, "List have been refreshed", Toast.LENGTH_SHORT);
             refreshed.show();
@@ -198,7 +197,8 @@ public class MainActivity extends AppCompatActivity {
             catch( JSONException e) {
                 e.printStackTrace();
             }
-            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.item_textView, mountainNames);
+
+            adapter = new MountainAdapter(getApplicationContext(), mountainList);
             myListView = (ListView)findViewById(R.id.myList);
             myListView.setAdapter(adapter);
 
