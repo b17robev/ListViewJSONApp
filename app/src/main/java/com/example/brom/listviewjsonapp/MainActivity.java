@@ -6,10 +6,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import org.json.*;
 
@@ -40,6 +42,7 @@ public class MainActivity extends AppCompatActivity {
 
     List <Mountain> mountainList = new ArrayList<>();
     List <String> mountainNames = new ArrayList<>();
+    ListView myListView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,8 +54,9 @@ public class MainActivity extends AppCompatActivity {
 
         ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.item_textView, mountainNames);
 
-        ListView myListView = (ListView)findViewById(R.id.myList);
+        myListView = (ListView)findViewById(R.id.myList);
         myListView.setAdapter(adapter);
+
 
         myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
@@ -76,7 +80,29 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
 
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu){
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+        return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        int id = item.getItemId();
+
+        if(id == R.id.action_refresh)
+        {
+            mountainNames.clear();
+            new FetchData().execute();
+            Toast refreshed = Toast.makeText(this, "List have been refreshed", Toast.LENGTH_SHORT);
+            refreshed.show();
+
+            return true;
+        }
+
+        return super.onOptionsItemSelected(item);
     }
 
 
@@ -172,6 +198,10 @@ public class MainActivity extends AppCompatActivity {
             catch( JSONException e) {
                 e.printStackTrace();
             }
+            ArrayAdapter adapter = new ArrayAdapter(getApplicationContext(), R.layout.list_item_textview, R.id.item_textView, mountainNames);
+            myListView = (ListView)findViewById(R.id.myList);
+            myListView.setAdapter(adapter);
+
         }
     }
 }
