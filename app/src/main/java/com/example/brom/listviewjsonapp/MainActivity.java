@@ -1,10 +1,13 @@
 package com.example.brom.listviewjsonapp;
 
+import android.content.Intent;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 
@@ -50,6 +53,29 @@ public class MainActivity extends AppCompatActivity {
 
         ListView myListView = (ListView)findViewById(R.id.myList);
         myListView.setAdapter(adapter);
+
+        myListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> adapterView, View view, int position, long l) {
+
+
+                Intent intent = new Intent(getApplicationContext(), MountainDetails.class);
+                Bundle extras = new Bundle();
+
+                String name = mountainList.get(position).getName();
+                String location = mountainList.get(position).getLocation();
+                String height = Integer.toString(mountainList.get(position).getHeight());
+                String url = mountainList.get(position).getImage();
+
+                extras.putString("EXTRA_NAME", name);
+                extras.putString("EXTRA_LOCATION", location);
+                extras.putString("EXTRA_HEIGHT", height);
+                extras.putString("EXTRA_IMAGE", url);
+                intent.putExtras(extras);
+                getApplicationContext().startActivity(intent);
+
+            }
+        });
 
     }
 
